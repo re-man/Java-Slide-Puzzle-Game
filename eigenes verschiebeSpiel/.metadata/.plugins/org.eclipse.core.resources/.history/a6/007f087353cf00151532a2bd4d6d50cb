@@ -1,0 +1,32 @@
+package verschiebespiel;
+
+public class ButtonBlink implements Runnable{
+	
+	Spielfeld sf;
+	private static int BLINK_TIME = 300;
+	
+	public ButtonBlink(Spielfeld _sf){
+		sf = _sf;
+	}
+
+	@Override
+	public void run() {
+		for (int i = 0; i < 3; i++){
+			sf.bBlink(true);
+			try {
+				Thread.sleep(ButtonBlink.BLINK_TIME);
+			} catch (InterruptedException error) {
+				sf.bBlink(false);
+				break;
+			}
+			sf.bBlink(false);
+			try {
+				
+			} catch (InterruptedException error) {
+				
+			}
+		}
+		
+	}
+
+}

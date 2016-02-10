@@ -1,0 +1,15 @@
+package verschiebespiel;
+
+public class ButtonBlink implements Runnable{
+	
+	public ButtonBlink{
+		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

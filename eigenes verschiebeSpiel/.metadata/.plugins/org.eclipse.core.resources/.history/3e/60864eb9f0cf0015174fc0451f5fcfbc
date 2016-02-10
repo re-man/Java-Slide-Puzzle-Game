@@ -1,0 +1,117 @@
+package verschiebespiel;
+
+import java.awt.event.*;
+import javax.swing.*;
+import de.fhwgt.verschiebespiel.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+
+@SuppressWarnings("serial")
+public class MenuBar extends JMenuBar {
+
+	private JMenu hauptmenue;
+	private JMenu ansicht;
+	private JMenuItem ns;
+	private JMenuItem sl;
+	private JMenuItem sb;
+	private LookAndFeelInfo[] lookAndFeelListe;
+	private JMenu lookAndFeel;
+	private ButtonGroup lAFGroup;
+	private JMenuItem[] lAF;
+	private Hauptfenster hf;
+	private Anzeige anzeige;
+	private logik logik;
+	private Spielfeld sf;
+	
+	public MenuBar(Hauptfenster _hf) {
+
+		hf = _hf;
+		sf = hf.getSF();
+		logik = hf.getLogik();
+		
+		// Menü
+		hauptmenue = new JMenu("Spiel");
+		ns = hauptmenue.add("Neues Spiel");
+		sl = hauptmenue.add("Spiel lösen");
+		sb = hauptmenue.add("Spiel beenden");
+		
+		ns.addActionListener(new ActionListener(){
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				hf.neuesSpielStarten();
+			}	
+		});
+		
+		sl.addActionListener(new ActionListener(){
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				logik.SetSpielEnde();
+				sf.zeichneSF();	
+			}		
+		});
+		
+		sb.addActionListener(new ActionListener(){
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				System.exit(0);
+			}	
+		});
+		
+		this.add(hauptmenue);
+		
+		lookAndFeelListe = UIManager.getInstalledLookAndFeels();
+		ansicht = new JMenu("Ansicht");
+		lookAndFeel = new JMenu("Look and Feel");
+		lAFGroup = new ButtonGroup();
+		lAF = new JMenuItem[lookAndFeelListe.length];
+		
+		ansicht.add(lookAndFeel);
+		
+		for(int i = 0; i < lookAndFeelListe.length; i++){
+			
+			lAF[i] = new JRadioButtonMenuItem(lookAndFeelListe[i].getName());
+			lAF[i].setActionCommand(lookAndFeelListe[i].getName());
+		    lAF[i].addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					for(int j = 0; j < lookAndFeelListe.length; j++){
+						if(lookAndFeelListe[j].getName() == event.getActionCommand()){
+							try {
+								UIManager.setLookAndFeel(lookAndFeelListe[j].getClassName());
+								anzeige = hf.getAnzeige();
+								// Nach festlegen des LookAndFeels, Bäume frisch aufbauen
+								SwingUtilities.updateComponentTreeUI(hf);
+								SwingUtilities.updateComponentTreeUI(anzeige);
+								hf.pack();
+								anzeige.pack();
+								
+							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+									| UnsupportedLookAndFeelException e) {
+								System.out.println("Fehler beim Auswählen des Look and Feels!");
+								e.printStackTrace();
+							}
+						}
+					}
+					
+				}
+		    	
+		    });
+		      
+		      if (lookAndFeelListe[i].getName() == UIManager.getLookAndFeel().getName()) {
+					lAF[i].setSelected(true);
+				} else {
+					lAF[i].setSelected(false);
+				}
+		      lAFGroup.add(lAF[i]);
+		      lookAndFeel.add(lAF[i]);
+		}
+		
+		this.add(ansicht);
+		
+		
+	}
+
+}

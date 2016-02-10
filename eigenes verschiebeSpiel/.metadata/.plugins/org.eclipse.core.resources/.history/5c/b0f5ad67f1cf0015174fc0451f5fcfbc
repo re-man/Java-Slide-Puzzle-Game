@@ -1,0 +1,36 @@
+package verschiebespiel;
+
+import java.awt.Toolkit;
+import java.awt.event.*;
+import javax.swing.*;
+import de.fhwgt.verschiebespiel.*;
+
+public class ListenerButton implements ActionListener {
+
+	private Hauptfenster hf;
+	private logik logik;
+	private Spielfeld sf;
+	private PunktestandFenster anzeige;
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		
+		JButton source = (JButton)event.getSource();
+		sf = (Spielfeld)(source.getParent());
+		logik = sf.getLogik();
+		hf = (Hauptfenster) sf.getTopLevelAncestor();
+		anzeige = hf.getAnzeige();
+
+		if (event.getActionCommand() != null) {
+			
+			logik.move(Integer.parseInt(event.getActionCommand()));
+			anzeige.setPunktestand(logik.getZaehler());
+			sf.zeichneSF();
+			System.out.println();
+		} else {
+			Toolkit.getDefaultToolkit().beep();
+		}
+		
+	}
+
+}

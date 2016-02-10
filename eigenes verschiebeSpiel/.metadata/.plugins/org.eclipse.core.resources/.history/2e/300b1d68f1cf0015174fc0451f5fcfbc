@@ -1,0 +1,73 @@
+package verschiebespiel;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+@SuppressWarnings("serial")
+public class PunktestandFenster extends JWindow implements ActionListener {
+	
+	private Hauptfenster hf;
+	private JPanel panelUnten = new JPanel();
+	private JPanel rahmen = new JPanel();
+	private JLabel punktestandLbl = new JLabel("Verbrauchte Züge");
+	private JButton neuesSpielBtn = new JButton("Neues Spiel");
+	private JTextField punktestandTF = new JTextField("0");
+	private Point hfOrt;
+	private int hfBreite;
+	
+	public PunktestandFenster(JFrame _hf){
+		hf = (Hauptfenster)_hf;
+		hfOrt = hf.getLocation();
+		hfBreite = hf.getWidth();
+		
+		punktestandTF.setEditable(false);
+		neuesSpielBtn.addActionListener(this);
+		
+		punktestandLbl.setOpaque(true);
+		punktestandLbl.setVisible(true);
+		
+		panelUnten.setLayout(new BorderLayout());
+		panelUnten.add(punktestandLbl, BorderLayout.NORTH);
+		panelUnten.add(punktestandTF, BorderLayout.SOUTH);
+		
+		rahmen.setLayout(new BorderLayout());
+		rahmen.setBorder(BorderFactory.createLineBorder(Color.gray, 5));
+		
+		rahmen.add(panelUnten);
+		rahmen.add(neuesSpielBtn, BorderLayout.SOUTH);
+		
+		this.getContentPane().add(rahmen);
+
+		this.updateLocation(hf);
+		this.setVisible(true);
+		this.pack();
+	}
+	
+	public void updateLocation(Hauptfenster _hf){
+		hfOrt = _hf.getLocation();
+		this.setLocation((hfOrt.x+hfBreite)+10, hfOrt.y);
+
+	}
+	
+	public void setPunktestand(int points){
+		punktestandTF.setText(Integer.toString(points));		
+	}
+	
+	public Hauptfenster getHF(){
+		return hf;
+	}
+	
+	public void setButtonColor(Color _bgColor, Color _fgColor){
+		neuesSpielBtn.setBackground(_bgColor);
+		neuesSpielBtn.setForeground(_fgColor);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		hf.neuesSpielStarten();
+	}
+
+}

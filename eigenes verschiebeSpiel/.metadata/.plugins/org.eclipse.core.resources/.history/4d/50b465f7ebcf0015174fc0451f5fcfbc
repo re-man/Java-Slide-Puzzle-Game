@@ -1,0 +1,114 @@
+package verschiebespiel;
+
+import java.awt.Color;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class ListenerMaus extends MouseAdapter implements ItemListener, ActionListener {
+	
+	private Spielfeld sf;
+	private JPopupMenu popup;
+	private JMenu menu;
+	private ButtonGroup buttonGroup;
+	private JRadioButtonMenuItem leicht, normal, schwer, standard;
+	private String selected;
+	private Object source;
+	private JMenuItem bild;
+	private JFileChooser fchooser;
+	private int returnVal;
+	private String pfad;
+	private ImageIcon icon;
+
+
+	public ListenerMaus(Spielfeld _sf){
+		sf = _sf;
+		
+		popup = new JPopupMenu();
+		menu = new JMenu("Zügelimit");
+		bild = new JMenuItem("Bildauswahl für freies Feld");
+		
+		bild.addActionListener(this);
+		
+		leicht = new JRadioButtonMenuItem("Leicht");
+		leicht.addItemListener(this);
+		leicht.setToolTipText("Zügelimit: 300");
+		
+		normal = new JRadioButtonMenuItem("Normal");
+		normal.addItemListener(this);
+		normal.setToolTipText("Zügelimit: 200");
+
+		schwer = new JRadioButtonMenuItem("Schwer");
+		schwer.addItemListener(this);
+		schwer.setToolTipText("Zügelimit: 100");
+		
+		standard = new JRadioButtonMenuItem("Standard");
+		standard.addItemListener(this);
+		standard.setToolTipText("Zügelimit: unbegrenzt");
+		
+		buttonGroup = new ButtonGroup();
+		buttonGroup.add(leicht);
+		buttonGroup.add(normal);
+		buttonGroup.add(schwer);
+		buttonGroup.add(standard);
+		
+		menu.add(leicht);
+		menu.add(normal);
+		menu.add(schwer);
+		menu.add(standard);
+		
+		popup.add(menu);
+		popup.add(bild);
+	}
+	
+	public void mouseClicked(MouseEvent event) {
+		if (event.getButton() == MouseEvent.BUTTON3){
+			popup.show(event.getComponent(), event.getX(), event.getY());
+		}
+	};
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand() == bild.getActionCommand()){
+			fchooser = new JFileChooser();
+			fchooser.setDialogTitle("Bitte wähle ein Bild für das freie Feld");
+			returnVal = fchooser.showOpenDialog(sf);
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION){
+				pfad = fchooser.getSelectedFile().getAbsolutePath();
+				icon = new ImageIcon(pfad);
+			}
+			sf.setIconLeeresLabel(icon);
+		}
+		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent event) {
+		source = event.getItemSelectable();
+		
+		if (source == leicht){
+			sf.setColors(Color.GREEN, Color.BLACK);
+			sf.zeichneSF();
+			selected = "leicht";
+		}
+		else if (source == normal){
+			sf.setColors(Color.YELLOW, Color.BLACK);
+			sf.zeichneSF();
+			selected = "normal";
+		}
+		else if (source == schwer){
+			sf.setColors(Color.RED, Color.WHITE);
+			sf.zeichneSF();
+			selected = "schwer";
+		} else if (source == standard) {
+			sf.setColors(null, Color.BLACK);
+			selected = "standard";
+		}
+		
+	}
+	
+	public String getSelected(){
+		return selected;
+	}
+
+}

@@ -1,0 +1,19 @@
+package verschiebespiel;
+
+public class ButtonBlink implements Runnable{
+	
+	Spielfeld sf;
+	
+	public ButtonBlink(Spielfeld _sf){
+		sf = _sf;
+	}
+
+	@Override
+	public void run() {
+		for (int i = 0; i < 3; i++){
+			
+		}
+		
+	}
+
+}
